@@ -1,0 +1,58 @@
+LDS02 LIDAR sensor library for Linux / other unix systems - by Mathieu L.
+
+This file is a documentation for the usage of this library.
+Here is a link to the documentation of the sensor itself: https://emanual.robotis.com/docs/en/platform/turtlebot3/appendix_lds_02/
+
+This library is just composed of a C header file. include it to your project and you're good to go.
+
+The usage is shown in the example "example.c".
+
+To compile and run the example, run the command bellow (don't forget to replace /path/to/serial/port by the serial port which the sensor is connected to):
+    gcc -o example example.c && ./example  /path/to/serial/port
+
+or
+    clang -o example example.c && ./example /path/to/serial/port
+
+
+Here is a detailed walkthrough of the example with comments:
+
+/* The LDS02_Package structure is used to store the data provided by a package sent by the sensor */
+struct LDS02_Package package;
+
+/*This variable bellow is used to store the serial port. the function named lds02_init initiate the serial port using the path to the serial port as a parameter*/
+int lds02_serial_port = lds02_init(argv[1]);
+
+/*We then read from the serial port and gather all the informations inside our package*/
+lds02_read(&package, lds02_serial_port);
+
+/*We then display those informations*/
+printf("Speed: %udeg/s\n", package.speed);
+printf("Timestamp: %us\n", package.timestamp);
+for(size_t i = 0; i < 12; i++){
+    printf("Point%u {distance: %umm, confidence for distance: %u/255, angle %f\n", i+1, package.points[i].distance, package.points[i].confidence, package.points[i].angle);
+}
+printf("\n");
+
+/*You can use this function to close the serial connection*/
+lds02_close(lds02_serial_port);
+
+Tree of the library:
+
+Project_____________________
+    |        |              |
+    |        |              |
+timestamp  speed       Points[12]______________________
+                        |              |               |
+                    distance       confidence        angle
+
+
+More details about the data:
+
+Each package is composed of twelve points, a rotation speed and a timestamp.
+Each angle has polar coordinates (distance + calculated angle) and a level of confidence for the distance.
+The rotation speed is in degres/second
+The timestamp is in milliseconds
+The distance is in millimeters
+The angle is in degres
+The confidence for the distance is rated out of 255.
+For the data types, refer to "lds02.h".
