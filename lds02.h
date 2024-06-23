@@ -24,7 +24,7 @@ struct LDS02_Package{
     struct Point points[12];
 };
 
-void lds02_close(serial_port){
+void lds02_close(int serial_port){
     close(serial_port);
 }
 
