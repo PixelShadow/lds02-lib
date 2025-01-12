@@ -7,7 +7,7 @@ int main(int argc, char* argv[]){
     lds02_read(&package, lds02_serial_port);
     printf("Speed: %udeg/s\n", package.speed);
     printf("Timestamp: %us\n", package.timestamp);
-    for(size_t i = 0; i < 12; i++){
+    for(unsigned int i = 0; i < 12; i++){
         printf("Point%u {distance: %umm, confidence for distance: %u/255, angle %f\n", i+1, package.points[i].distance, package.points[i].confidence, package.points[i].angle);
     }
     printf("\n");
